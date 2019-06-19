@@ -10,14 +10,18 @@
 </div>
 
 <div class="row">
-    @*@using (Html.BeginForm())
-    {*@
-        <input type="text" placeholder="City" name="city" /> @*<input type="submit" />*@ @Html.ActionLink("Get city","GetCityFromApi","Home")
-    
+    @using (Html.BeginForm("GetCityFromApi","Home", FormMethod.Post))
+    {
+        <input type="text" placeholder="City" name="city" id="city" /> <input type="submit" /> @*@Html.ActionLink("Get city", "GetCityFromApi", "Home")*@
+
+        if (ViewBag.Checking)
+        {
         <div>
             Name: @Html.DisplayFor(m => m.name)
             Country: @Html.DisplayFor(m => m.country)
-            Humidity: @Html.DisplayFor(m => m.humidity)
-            Tempeture: @Html.DisplayFor(m => m.temp)
+            Humidity: @Html.DisplayFor(m => m.humidity) %
+            Tempeture: @Html.DisplayFor(m => m.temp) K
         </div>
+        }
+    }
 </div>

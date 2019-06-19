@@ -16,8 +16,14 @@ namespace WetherApp.Controllers
     {
         public ActionResult Index(City c)
         {
+            ViewBag.Checking = false;
+            if (c.name != null)
+            {
+                ViewBag.Checking = true;
+                return View(c);
+            }
+            else return View();
             
-            return View(c);
         }
 
         public ActionResult About()
@@ -33,13 +39,14 @@ namespace WetherApp.Controllers
 
             return View();
         }
-        [HttpGet]
+      
+        [HttpPost]
         public ActionResult GetCityFromApi(FormCollection formCollection)
         {
-            string city = Convert.ToString( formCollection["city"]);
-            city = "London";
+            string city = formCollection["city"].ToString();
+            //city = "London";
             string appid = "a4e8a4397c4019fed558b5baf7a0d911";
-            string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0},uk&APPID=a4e8a4397c4019fed558b5baf7a0d911", city);
+            string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&APPID=a4e8a4397c4019fed558b5baf7a0d911", city);
 
             City _city = new City();
             using (WebClient client = new WebClient())
