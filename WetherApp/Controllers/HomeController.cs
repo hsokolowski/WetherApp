@@ -56,18 +56,29 @@ namespace WetherApp.Controllers
             City _city = new City();
             using (WebClient client = new WebClient())
             {
-                string json = client.DownloadString(url);
-                //WeatherInfo _info = (new JavaScriptSerializer()).Deserialize<WeatherInfo>(json);
-                JObject jObj = JObject.Parse(json);
+                try
+                {
+                    string json = client.DownloadString(url);
+                    JObject jObj = JObject.Parse(json);
 
-                _city.name = jObj["name"].ToString();
-                _city.country = jObj["sys"]["country"].ToString();
-                _city.humidity = (int)jObj["main"]["humidity"];
-                _city.temp = jObj["main"]["temp"].ToString();
-                TempData["getCity"] = _city;
+                    _city.name = jObj["name"].ToString();
+                    _city.country = jObj["sys"]["country"].ToString();
+                    _city.humidity = (int)jObj["main"]["humidity"];
+                    _city.temp = jObj["main"]["temp"].ToString();
+                    TempData["getCity"] = _city;
+
+                    return RedirectToAction("Index", _city);
+                }
+                catch(Exception e)
+                {
+                    ViewBag.MessageError = "Wrong city name!";
+                    ViewBag.Checking = false;
+                    return View("Index");
+                }
+                
             }
 
-            return RedirectToAction("Index", _city);
+            
         }
         
         public ActionResult Add()
