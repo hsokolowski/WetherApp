@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using AutoMapper;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using WetherApp.DAL;
 using WetherApp.Models;
 using WetherApp.ViewModel;
 
@@ -14,6 +16,8 @@ namespace WetherApp.Controllers
 {
     public class HomeController : Controller
     {
+        private DB db = new DB();
+
         public ActionResult Index(City c)
         {
             ViewBag.Checking = false;
@@ -29,15 +33,15 @@ namespace WetherApp.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
-            return View();
+            List<CityDto> list = db.Cities.ToList();
+            return View(list);
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            List<CityDto> list = db.Cities.ToList();
 
-            return View();
+            return View(list);
         }
       
         [HttpPost]
@@ -59,9 +63,26 @@ namespace WetherApp.Controllers
                 _city.country = jObj["sys"]["country"].ToString();
                 _city.humidity = (int)jObj["main"]["humidity"];
                 _city.temp = jObj["main"]["temp"].ToString();
+                TempData["getCity"] = _city;
             }
 
             return RedirectToAction("Index", _city);
+        }
+        
+        public ActionResult Add()
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<City, CityDto>();
+            });
+
+            IMapper mapper = config.CreateMapper();
+            var source = (City)TempData["getCity"];
+            var dest = mapper.Map<City, CityDto>(source);
+
+            db.Cities.Add(dest);
+            db.SaveChanges();
+
+            return RedirectToAction("Contact");
         }
     }
 }
