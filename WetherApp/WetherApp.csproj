@@ -144,6 +144,10 @@
     <Compile Include="Migrations\201906201356286_init.Designer.cs">
       <DependentUpon>201906201356286_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906202156394_setdb.cs" />
+    <Compile Include="Migrations\201906202156394_setdb.Designer.cs">
+      <DependentUpon>201906202156394_setdb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -2692,6 +2696,8 @@
     <Content Include="Scripts\kendo\messages\kendo.messages.zh-CN.min.js.map" />
     <Content Include="Scripts\kendo\messages\kendo.messages.zh-HK.min.js.map" />
     <Content Include="Scripts\kendo\messages\kendo.messages.zh-TW.min.js.map" />
+    <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2712,6 +2718,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201906201356286_init.resx">
       <DependentUpon>201906201356286_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906202156394_setdb.resx">
+      <DependentUpon>201906202156394_setdb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
