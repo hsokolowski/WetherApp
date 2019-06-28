@@ -11,12 +11,22 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using WetherApp.DAL;
 using WetherApp.Models;
+using WetherApp.Repository;
 using WetherApp.ViewModel;
 
 namespace WetherApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IMapper _mapper;
+        private readonly ICityRepository _serviceWeather;
+
+        public HomeController(ICityRepository service, IMapper mapper)
+        {
+            _serviceWeather = service;
+            _mapper = mapper;
+        }
+
         private DB db = new DB();
 
         public ActionResult Index(City c)
@@ -31,16 +41,20 @@ namespace WetherApp.Controllers
             
         }
 
-        public ActionResult About()
+        public ActionResult About() //telerik
         {
             ViewBag.Message = "Your application description page.";
-            List<CityDto> list = db.Cities.ToList();
+            IEnumerable<CityDto> list = _serviceWeather.GetAll()
+                .Select(w => _mapper.Map<CityDto>(w))
+                .ToList();
             return View(list);
         }
 
-        public ActionResult Contact()
+        public ActionResult Contact()  //normal
         {
-            List<CityDto> list = db.Cities.ToList();
+            IEnumerable<CityDto> list = _serviceWeather.GetAll()
+                .Select(w => _mapper.Map<CityDto>(w))
+                .ToList();
 
             return View(list);
         }
@@ -53,7 +67,7 @@ namespace WetherApp.Controllers
             string appid = "a4e8a4397c4019fed558b5baf7a0d911";
             string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&APPID=a4e8a4397c4019fed558b5baf7a0d911", city);
 
-            City _city = new City();
+            CityDto _city = new CityDto();
             using (WebClient client = new WebClient())
             {
                 try
@@ -83,84 +97,58 @@ namespace WetherApp.Controllers
         
         public ActionResult Add()
         {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<City, CityDto>();
-            });
+            //var config = new MapperConfiguration(cfg => {
+            //    cfg.CreateMap<City, CityDto>();
+            //});
 
-            IMapper mapper = config.CreateMapper();
-            var source = (City)TempData["getCity"];
-            var dest = mapper.Map<City, CityDto>(source);
+            //IMapper mapper = config.CreateMapper();
+            //var source = (City)TempData["getCity"];
+            //var dest = mapper.Map<City, CityDto>(source);
 
-            db.Cities.Add(dest);
-            db.SaveChanges();
+            //db.Cities.Add(dest);
+            //db.SaveChanges();
+
+            CityDto city = (CityDto)TempData["getCity"];
+            _serviceWeather.Add(city);
 
             return RedirectToAction("Contact");
         }
         public ActionResult Delete(int id)
         {
-            using (DB db = new DB())
-            {
-                CityDto _city = new CityDto() { id = id };
-                db.Cities.Attach(_city);
-                db.Cities.Remove(_city);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            
+            _serviceWeather.Delete(id);
+            return RedirectToAction("Index");           
         }
 
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            CityDto _city = new CityDto();
-            using (DB db = new DB())
-            {
-                
-                db.Cities.Attach(_city);
-                _city = db.Cities.Find(id);
-            }
-            return View(_city);
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //CityDto city = _serviceWeather.Get(id.Value);
+            //if (city == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            return View(Mapper.Map<CityDto>(_serviceWeather.Get(id.Value)));
         }
 
         public ActionResult Edit(int id)
         {
-            using (DB db = new DB())
+            CityDto city = _serviceWeather.Get(id);
+            if (city == null)
             {
-                CityDto _city = db.Cities.Where(s => s.id == id).FirstOrDefault();
-                return View(_city);
+                return HttpNotFound();
             }
-                
+            return View(city);
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CityDto c)
         {
-            using (DB db = new DB())
-            {
-                db.Entry(c).State = EntityState.Modified;
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
-                {
-                    Exception raise = dbEx;
-                    foreach (var validationErrors in dbEx.EntityValidationErrors)
-                    {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            string message = string.Format("{0}:{1}",
-                                validationErrors.Entry.Entity.ToString(),
-                                validationError.ErrorMessage);
-                            // raise a new exception nesting
-                            // the current instance as InnerException
-                            raise = new InvalidOperationException(message, raise);
-                        }
-                    }
-                    throw raise;
-                }
-                return RedirectToAction("Index");
-            }
-            
+            _serviceWeather.Update(c);
+           return RedirectToAction("Index");      
         }
     }
 }
