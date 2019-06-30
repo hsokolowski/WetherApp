@@ -22,7 +22,7 @@ namespace WetherApp
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<City, CityDto>();
+                cfg.CreateMap<CityDto, City>();
             });
 
             IMapper mapper = config.CreateMapper();

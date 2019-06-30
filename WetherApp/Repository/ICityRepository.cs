@@ -14,5 +14,6 @@ namespace WetherApp.Repository
         CityDto Add(CityDto item);
         bool Update(CityDto item);
         bool Delete(int id);
+        bool UpdateAll(IEnumerable<CityDto> list);
     }
 }

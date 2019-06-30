@@ -27,7 +27,6 @@ namespace WetherApp.Controllers
             _mapper = mapper;
         }
 
-        private DB db = new DB();
 
         public ActionResult Index(City c)
         {
@@ -38,7 +37,7 @@ namespace WetherApp.Controllers
                 return View(c);
             }
             else return View();
-            
+
         }
 
         public ActionResult About() //telerik
@@ -58,7 +57,7 @@ namespace WetherApp.Controllers
 
             return View(list);
         }
-      
+
         [HttpPost]
         public ActionResult GetCityFromApi(FormCollection formCollection)
         {
@@ -83,31 +82,20 @@ namespace WetherApp.Controllers
 
                     return RedirectToAction("Index", _city);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     ViewBag.MessageError = "Wrong city name!";
                     ViewBag.Checking = false;
                     return View("Index");
                 }
-                
+
             }
 
-            
+
         }
-        
+
         public ActionResult Add()
         {
-            //var config = new MapperConfiguration(cfg => {
-            //    cfg.CreateMap<City, CityDto>();
-            //});
-
-            //IMapper mapper = config.CreateMapper();
-            //var source = (City)TempData["getCity"];
-            //var dest = mapper.Map<City, CityDto>(source);
-
-            //db.Cities.Add(dest);
-            //db.SaveChanges();
-
             CityDto city = (CityDto)TempData["getCity"];
             _serviceWeather.Add(city);
 
@@ -116,21 +104,12 @@ namespace WetherApp.Controllers
         public ActionResult Delete(int id)
         {
             _serviceWeather.Delete(id);
-            return RedirectToAction("Index");           
+            return RedirectToAction("Index");
         }
 
         public ActionResult Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //CityDto city = _serviceWeather.Get(id.Value);
-            //if (city == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            return View(Mapper.Map<CityDto>(_serviceWeather.Get(id.Value)));
+            return View(_mapper.Map<CityDto>(_serviceWeather.Get(id.Value)));
         }
 
         public ActionResult Edit(int id)
@@ -148,7 +127,42 @@ namespace WetherApp.Controllers
         public ActionResult Edit(CityDto c)
         {
             _serviceWeather.Update(c);
-           return RedirectToAction("Index");      
+            return RedirectToAction("Contact");
+        }
+
+        public ActionResult UpdateTempeture()
+        {
+            IEnumerable<CityDto> list = _serviceWeather.GetAll()
+                .Select(w => _mapper.Map<CityDto>(w))
+                .ToList();
+
+
+            TempData["CityErrorMessage"] = (_serviceWeather.UpdateAll(list)) ? "All cities have current weather." : "Error! Something goes wrong.";
+
+            return RedirectToAction("Contact");
+            //foreach(CityDto c in list)
+            //{
+            //    string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&APPID=a4e8a4397c4019fed558b5baf7a0d911", c.name);
+            //    using (WebClient client = new WebClient())
+            //    {
+            //        try
+            //        {
+            //            string json = client.DownloadString(url);
+            //            JObject jObj = JObject.Parse(json);
+
+            //            c.temp = jObj["main"]["temp"].ToString();
+            //            _serviceWeather.Update(c);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            ViewBag.CityError = "Error! Wrong city name. Check the correctness.";
+            //            ViewBag.CityId = c.id;
+            //            return RedirectToAction("Contact");
+            //        }
+            //    }
+            //}
+
+            //return RedirectToAction("Contact");
         }
     }
 }

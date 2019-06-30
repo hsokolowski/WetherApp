@@ -180,13 +180,20 @@
     <Compile Include="Migrations\201906282251380_dependency.Designer.cs">
       <DependentUpon>201906282251380_dependency.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906291740141_temp-cons.cs" />
+    <Compile Include="Migrations\201906291740141_temp-cons.Designer.cs">
+      <DependentUpon>201906291740141_temp-cons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906301446542_temp-consv2.cs" />
+    <Compile Include="Migrations\201906301446542_temp-consv2.Designer.cs">
+      <DependentUpon>201906301446542_temp-consv2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ICityRepository.cs" />
     <Compile Include="Repository\CityRepository.cs" />
     <Compile Include="ViewModel\CityDto.cs" />
-    <Compile Include="ViewModel\WeatherInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -2758,6 +2765,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906282251380_dependency.resx">
       <DependentUpon>201906282251380_dependency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906291740141_temp-cons.resx">
+      <DependentUpon>201906291740141_temp-cons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906301446542_temp-consv2.resx">
+      <DependentUpon>201906301446542_temp-consv2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

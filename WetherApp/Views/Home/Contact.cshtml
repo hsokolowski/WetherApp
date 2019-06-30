@@ -14,10 +14,20 @@
 
 <h2>Contact</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Index")
-</p>
-<table class="table">
+<div style="display: flex;
+    justify-content: space-between;
+    align-items: center;">
+    <div>
+        @Html.ActionLink("Create New", "Index")
+    </div>
+    <div>
+        Tempeture in Celsius: <input type="checkbox" name="checkbox1" id="checkbox1" />
+    </div>
+    <div>
+        @Html.ActionLink("Update tempeture", "UpdateTempeture")
+    </div>
+</div>
+<table class="table" id="mytable">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.name)
@@ -29,9 +39,12 @@
             @Html.DisplayNameFor(model => model.humidity)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.temp)
+            @Html.DisplayNameFor(model => model.temp) 
+
         </th>
-        <th></th>
+        <th style="color:red;">
+            @TempData["CityErrorMessage"]
+        </th>
     </tr>
 
 @foreach (var item in Model) {
@@ -45,15 +58,43 @@
         <td>
             @Html.DisplayFor(modelItem => item.humidity)
         </td>
-        <td>
+        <td class="temp">
             @Html.DisplayFor(modelItem => item.temp)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.id })
         </td>
+
+
     </tr>
 }
 
 </table>
+<script>
+    $(function () {
+        var rows = document.getElementById("mytable").getElementsByTagName("tr").length;
+        console.log(rows);
+        $('#checkbox1').change(function () {  
+            if (this.checked) {
+                for (var i = 1; i < rows; i++) {
+                    let tempeture = document.getElementById("mytable").rows[i].cells[3].innerHTML
+                    console.log(tempeture);
+                    tempeture = tempeture.replace(/,/g, '.');
+                    let Celsius = parseFloat(tempeture) - 273.15;
+                    document.getElementById("mytable").rows[i].cells[3].innerHTML = Celsius.toFixed(2).toString().replace(".", ",");
+                    //console.log(tempeture);
+                }
+            } else {
+                for (var i = 1; i < rows; i++) {
+                    let tempeture = document.getElementById("mytable").rows[i].cells[3].innerHTML;
+                    tempeture = tempeture.replace(/,/g, '.');
+                    let Kelvin = parseFloat(tempeture) + 273.15;
+                    document.getElementById("mytable").rows[i].cells[3].innerHTML = Kelvin.toFixed(2).toString().replace(".", ",");
+                    //console.log(tempeture);
+                }
+            }
+        });
+    })
+</script>
