@@ -7,13 +7,13 @@ namespace WetherApp.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class setdb : IMigrationMetadata
+    public sealed partial class rebase : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(setdb));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(rebase));
         
         string IMigrationMetadata.Id
         {
-            get { return "201906202156394_setdb"; }
+            get { return "201906302049409_rebase"; }
         }
         
         string IMigrationMetadata.Source

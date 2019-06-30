@@ -168,29 +168,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201906201356286_init.cs" />
-    <Compile Include="Migrations\201906201356286_init.Designer.cs">
-      <DependentUpon>201906201356286_init.cs</DependentUpon>
+    <Compile Include="Migrations\201906302049409_rebase.cs" />
+    <Compile Include="Migrations\201906302049409_rebase.Designer.cs">
+      <DependentUpon>201906302049409_rebase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201906202156394_setdb.cs" />
-    <Compile Include="Migrations\201906202156394_setdb.Designer.cs">
-      <DependentUpon>201906202156394_setdb.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201906282251380_dependency.cs" />
-    <Compile Include="Migrations\201906282251380_dependency.Designer.cs">
-      <DependentUpon>201906282251380_dependency.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201906291740141_temp-cons.cs" />
-    <Compile Include="Migrations\201906291740141_temp-cons.Designer.cs">
-      <DependentUpon>201906291740141_temp-cons.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201906301446542_temp-consv2.cs" />
-    <Compile Include="Migrations\201906301446542_temp-consv2.Designer.cs">
-      <DependentUpon>201906301446542_temp-consv2.cs</DependentUpon>
+    <Compile Include="Migrations\201906302100006_init.cs" />
+    <Compile Include="Migrations\201906302100006_init.Designer.cs">
+      <DependentUpon>201906302100006_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryApi\ApiRepository.cs" />
+    <Compile Include="RepositoryApi\IApiRepository.cs" />
     <Compile Include="Repository\ICityRepository.cs" />
     <Compile Include="Repository\CityRepository.cs" />
     <Compile Include="ViewModel\CityDto.cs" />
@@ -2757,20 +2747,11 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201906201356286_init.resx">
-      <DependentUpon>201906201356286_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201906302049409_rebase.resx">
+      <DependentUpon>201906302049409_rebase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201906202156394_setdb.resx">
-      <DependentUpon>201906202156394_setdb.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201906282251380_dependency.resx">
-      <DependentUpon>201906282251380_dependency.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201906291740141_temp-cons.resx">
-      <DependentUpon>201906291740141_temp-cons.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201906301446542_temp-consv2.resx">
-      <DependentUpon>201906301446542_temp-consv2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201906302100006_init.resx">
+      <DependentUpon>201906302100006_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -4,15 +4,7 @@
     ViewBag.Title = "Contact";
 }
 
-<script type="text/x-kendo-tmpl" id="template">
-    <div class="product">
-        <img src="@Url.Content("~/content/web/foods/")#:ProductID#.jpg" alt="#:ProductName# image" />
-        <h3>#:ProductName#</h3>
-        <p>#:kendo.toString(UnitPrice, "c")#</p>
-    </div>
-</script>
-
-<h2>Contact</h2>
+<h2>Watchlist of cities </h2>
 
 <div style="display: flex;
     justify-content: space-between;
@@ -30,10 +22,7 @@
 <table class="table" id="mytable">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.country)
+            @Html.DisplayNameFor(model => model.localization)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.humidity)
@@ -42,7 +31,7 @@
             @Html.DisplayNameFor(model => model.temp) 
 
         </th>
-        <th style="color:red;">
+        <th style="color:@TempData["CityErrorMessageColor"];">
             @TempData["CityErrorMessage"]
         </th>
     </tr>
@@ -50,10 +39,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.country)
+            @Html.DisplayFor(modelItem => item.localization)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.humidity)
@@ -79,19 +65,19 @@
         $('#checkbox1').change(function () {  
             if (this.checked) {
                 for (var i = 1; i < rows; i++) {
-                    let tempeture = document.getElementById("mytable").rows[i].cells[3].innerHTML
+                    let tempeture = document.getElementById("mytable").rows[i].cells[2].innerHTML
                     console.log(tempeture);
                     tempeture = tempeture.replace(/,/g, '.');
                     let Celsius = parseFloat(tempeture) - 273.15;
-                    document.getElementById("mytable").rows[i].cells[3].innerHTML = Celsius.toFixed(2).toString().replace(".", ",");
+                    document.getElementById("mytable").rows[i].cells[2].innerHTML = Celsius.toFixed(2).toString().replace(".", ",");
                     //console.log(tempeture);
                 }
             } else {
                 for (var i = 1; i < rows; i++) {
-                    let tempeture = document.getElementById("mytable").rows[i].cells[3].innerHTML;
+                    let tempeture = document.getElementById("mytable").rows[i].cells[2].innerHTML;
                     tempeture = tempeture.replace(/,/g, '.');
                     let Kelvin = parseFloat(tempeture) + 273.15;
-                    document.getElementById("mytable").rows[i].cells[3].innerHTML = Kelvin.toFixed(2).toString().replace(".", ",");
+                    document.getElementById("mytable").rows[i].cells[2].innerHTML = Kelvin.toFixed(2).toString().replace(".", ",");
                     //console.log(tempeture);
                 }
             }

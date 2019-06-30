@@ -12,18 +12,20 @@
 <div class="row">
     @using (Html.BeginForm("GetCityFromApi", "Home", FormMethod.Post))
     {
-        <input type="text" placeholder="City" name="city" id="city" /> <input type="submit" /> @*@Html.ActionLink("Get city", "GetCityFromApi", "Home")*@
-        @ViewBag.MessageError
-        if (ViewBag.Checking)
-        {
-            <div>
-                Name: @Html.DisplayFor(m => m.name)
-                Country: @Html.DisplayFor(m => m.country)
-                Humidity: @Html.DisplayFor(m => m.humidity)%
-                Tempeture: @Html.DisplayFor(m => m.temp) K
-            </div>
-            @Html.ActionLink("Add city", "Add", "Home")
+            <input type="text" placeholder="City" name="city" id="city" /> <input type="submit" id="btn"/>
+            @ViewBag.MessageError
+            if (ViewBag.Checking)
+            {
+                <div>
+                    Name:<b> @Html.DisplayFor(m => m.name)</b>
+                    Country:<b> @Html.DisplayFor(m => m.country)</b>
+                    Humidity:<b> @Html.DisplayFor(m => m.humidity)%</b>
+                    Tempeture:<b> @Html.DisplayFor(m => m.temp) K</b>
+                </div>
+                @Html.ActionLink("Add city", "Add", "Home")
 
-        }
-    }
+            }
+
+
+     }
 </div>

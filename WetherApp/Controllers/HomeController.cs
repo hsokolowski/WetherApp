@@ -12,6 +12,7 @@ using System.Web.Script.Serialization;
 using WetherApp.DAL;
 using WetherApp.Models;
 using WetherApp.Repository;
+using WetherApp.RepositoryApi;
 using WetherApp.ViewModel;
 
 namespace WetherApp.Controllers
@@ -19,12 +20,14 @@ namespace WetherApp.Controllers
     public class HomeController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly ICityRepository _serviceWeather;
+        private readonly ICityRepository _serviceDb;
+        private readonly IApiRepository _serviceApi;
 
-        public HomeController(ICityRepository service, IMapper mapper)
+        public HomeController(ICityRepository service, IMapper mapper, IApiRepository api)
         {
-            _serviceWeather = service;
+            _serviceDb = service;
             _mapper = mapper;
+            _serviceApi = api;
         }
 
 
@@ -43,7 +46,7 @@ namespace WetherApp.Controllers
         public ActionResult About() //telerik
         {
             ViewBag.Message = "Your application description page.";
-            IEnumerable<CityDto> list = _serviceWeather.GetAll()
+            IEnumerable<CityDto> list = _serviceDb.GetAll()
                 .Select(w => _mapper.Map<CityDto>(w))
                 .ToList();
             return View(list);
@@ -51,7 +54,7 @@ namespace WetherApp.Controllers
 
         public ActionResult Contact()  //normal
         {
-            IEnumerable<CityDto> list = _serviceWeather.GetAll()
+            IEnumerable<CityDto> list = _serviceDb.GetAll()
                 .Select(w => _mapper.Map<CityDto>(w))
                 .ToList();
 
@@ -61,60 +64,42 @@ namespace WetherApp.Controllers
         [HttpPost]
         public ActionResult GetCityFromApi(FormCollection formCollection)
         {
-            string city = formCollection["city"].ToString();
-            //city = "London";
-            string appid = "a4e8a4397c4019fed558b5baf7a0d911";
-            string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&APPID=a4e8a4397c4019fed558b5baf7a0d911", city);
+            string cityName = formCollection["city"].ToString();
 
-            CityDto _city = new CityDto();
-            using (WebClient client = new WebClient())
+            City city = _serviceApi.GetFromApi(cityName);
+            if(city==null)
             {
-                try
-                {
-                    string json = client.DownloadString(url);
-                    JObject jObj = JObject.Parse(json);
-
-                    _city.name = jObj["name"].ToString();
-                    _city.country = jObj["sys"]["country"].ToString();
-                    _city.humidity = (int)jObj["main"]["humidity"];
-                    _city.temp = jObj["main"]["temp"].ToString();
-                    TempData["getCity"] = _city;
-
-                    return RedirectToAction("Index", _city);
-                }
-                catch (Exception e)
-                {
-                    ViewBag.MessageError = "Wrong city name!";
-                    ViewBag.Checking = false;
-                    return View("Index");
-                }
-
+                ViewBag.MessageError = "Wrong city name!";
+                ViewBag.Checking = false;
+                return View("Index");
             }
+            TempData["getCity"] = city;
 
-
+            return RedirectToAction("Index", city);
         }
 
         public ActionResult Add()
         {
-            CityDto city = (CityDto)TempData["getCity"];
-            _serviceWeather.Add(city);
+            City city = (City)TempData["getCity"];
+            _serviceDb.Add(city);
 
             return RedirectToAction("Contact");
         }
         public ActionResult Delete(int id)
         {
-            _serviceWeather.Delete(id);
+            _serviceDb.Delete(id);
             return RedirectToAction("Index");
         }
 
         public ActionResult Details(int? id)
         {
-            return View(_mapper.Map<CityDto>(_serviceWeather.Get(id.Value)));
+            if (id == null) id = 1;
+            return View(_mapper.Map<CityDto>(_serviceDb.Get(id.Value)));
         }
 
         public ActionResult Edit(int id)
         {
-            CityDto city = _serviceWeather.Get(id);
+            City city = _serviceDb.Get(id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -124,45 +109,30 @@ namespace WetherApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(CityDto c)
+        public ActionResult Edit(City c)
         {
-            _serviceWeather.Update(c);
+            _serviceDb.Update(c);
             return RedirectToAction("Contact");
         }
 
         public ActionResult UpdateTempeture()
         {
-            IEnumerable<CityDto> list = _serviceWeather.GetAll()
-                .Select(w => _mapper.Map<CityDto>(w))
+            IEnumerable<City> list = _serviceDb.GetAll()
+                .Select(w => _mapper.Map<City>(w))
                 .ToList();
 
-
-            TempData["CityErrorMessage"] = (_serviceWeather.UpdateAll(list)) ? "All cities have current weather." : "Error! Something goes wrong.";
-
+            if((_serviceApi.UpdateAll(list)))
+            {
+                TempData["CityErrorMessage"] = "All cities have current weather.";
+                TempData["CityErrorMessageColor"] =  "green";
+            }
+            else
+            {
+                TempData["CityErrorMessage"] = "Error! Something goes wrong.";
+                TempData["CityErrorMessageColor"] = "red";
+            }
+            
             return RedirectToAction("Contact");
-            //foreach(CityDto c in list)
-            //{
-            //    string url = string.Format("http://api.openweathermap.org/data/2.5/weather?q={0}&APPID=a4e8a4397c4019fed558b5baf7a0d911", c.name);
-            //    using (WebClient client = new WebClient())
-            //    {
-            //        try
-            //        {
-            //            string json = client.DownloadString(url);
-            //            JObject jObj = JObject.Parse(json);
-
-            //            c.temp = jObj["main"]["temp"].ToString();
-            //            _serviceWeather.Update(c);
-            //        }
-            //        catch (Exception e)
-            //        {
-            //            ViewBag.CityError = "Error! Wrong city name. Check the correctness.";
-            //            ViewBag.CityId = c.id;
-            //            return RedirectToAction("Contact");
-            //        }
-            //    }
-            //}
-
-            //return RedirectToAction("Contact");
         }
     }
 }

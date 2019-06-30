@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using WetherApp.Models;
 using WetherApp.ViewModel;
 
 namespace WetherApp.DAL
@@ -13,6 +14,6 @@ namespace WetherApp.DAL
         {
 
         }
-        public DbSet<CityDto> Cities { get; set; }
+        public DbSet<City> Cities { get; set; }
     }
 }
